@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="sys-emp" format="json">
+      <types:shape format="weave" example="examples/sys-update-emp.json"><![CDATA[%dw 2.0
+
+type sys_emp = {|
+  employee: {|
+    identification: {|
+      firstName: String, 
+      lastName: String, 
+      dob: String, 
+      gender: String, 
+      title: String
+    |}, 
+    address: Array<{|      "type": String,       number: String,       street: String,       unit: String,       city: String,       state: String,       zipcode: String    |}>, 
+    communication: Array<{|      "type": String,       value: String,       preferred: String    |}>
+  |}
+|} {"example": "{\\\"employee\\\":{\\\"identification\\\":{\\\"firstName\\\":\\\"Bob\\\",\\\"lastName\\\":\\\"Frederick\\\",\\\"dob\\\":\\\"06\\/21\\/1980\\\",\\\"gender\\\":\\\"M\\\",\\\"title\\\":\\\"Manager\\\"},\\\"address\\\":[{\\\"type\\\":\\\"home\\\",\\\"number\\\":\\\"1234\\\",\\\"street\\\":\\\"blah blah St\\\",\\\"unit\\\":\\\"1 a\\\",\\\"city\\\":\\\"Somewhere\\\",\\\"state\\\":\\\"WV\\\",\\\"zipcode\\\":\\\"12345\\\"}],\\\"communication\\\":[{\\\"type\\\":\\\"email\\\",\\\"value\\\":\\\"bfe@sample.com\\\",\\\"preferred\\\":\\\"true\\\"},{\\\"type\\\":\\\"cell\\\",\\\"value\\\":\\\"304-555-8282\\\"}]}}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="sys-emp-all" format="json">
+      <types:shape format="weave" example="examples/sys-emp-all.json"><![CDATA[%dw 2.0
+
+type sys_emp_all = {|
+  employeeall: String, 
+  employee: Array<{|    identification: {|      firstName: String,       lastName: String,       dob: String,       gender: String,       title: String    |},     address: Array<{|      "type": String,       number: String,       street: String,       unit: String,       city: String,       state: String,       zipcode: String    |}>, 
+    communication: Array<{|      "type": String,       value: String,       preferred: String    |}>
+  |}>
+|} {"example": "{\\\"employeeall\\\":\\\"\\\",\\\"employee\\\":[{\\\"identification\\\":{\\\"firstName\\\":\\\"Bob\\\",\\\"lastName\\\":\\\"Frederick\\\",\\\"dob\\\":\\\"06\\/21\\/1980\\\",\\\"gender\\\":\\\"M\\\",\\\"title\\\":\\\"Manager\\\"},\\\"address\\\":[{\\\"type\\\":\\\"home\\\",\\\"number\\\":\\\"1234\\\",\\\"street\\\":\\\"blah blah St\\\",\\\"unit\\\":\\\"1 a\\\",\\\"city\\\":\\\"Somewhere\\\",\\\"state\\\":\\\"WV\\\",\\\"zipcode\\\":\\\"12345\\\"}],\\\"communication\\\":[{\\\"type\\\":\\\"email\\\",\\\"value\\\":\\\"bfe@sample.com\\\",\\\"preferred\\\":\\\"true\\\"},{\\\"type\\\":\\\"cell\\\",\\\"value\\\":\\\"304-555-8282\\\"}]}]}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#dc5bfd64-dbe1-4fb8-898a-4bdeabb30329">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="sys-emp"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#799cdb3f-2158-4917-9fb1-d2f6544cb74b">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="sys-emp"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#27323965-1d5b-4298-bf48-d4300ad85413">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="sys-emp"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#6b6fa1ec-a614-4459-a767-8ef1f02c73d4">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="sys-emp-all"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="sys-emp-all"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

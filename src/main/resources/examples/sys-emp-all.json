@@ -1,0 +1,125 @@
+[
+  {
+    "identification": {
+      "firstName": "Bob",
+      "lastName": "Frederick",
+      "dob": "06/21/1981",
+      "gender": "M",
+      "title": "student"
+    },
+    "address": [
+      {
+        "street": "blah blah St",
+        "type": "home",
+        "number": "1234",
+        "unit": "1 a",
+        "city": "Somewhere",
+        "state": "WV",
+        "zipcode": "12345"
+      },
+      {
+        "street": "blah blah St",
+        "type": "home",
+        "number": "1234",
+        "unit": "1 a",
+        "city": "Somewhere",
+        "state": "WV",
+        "zipcode": "12345"
+      }
+    ],
+    "communication": [
+      {
+        "value": "304-555-8282",
+        "type": "cell",
+        "preferred": "cell"
+      },
+      {
+        "value": "304-555-8282",
+        "type": "cell",
+        "preferred": "cell"
+      }
+    ]
+  },
+  {
+    "identification": {
+      "firstName": "Bob",
+      "lastName": "Frederick",
+      "dob": "06/21/1981",
+      "gender": "M",
+      "title": "student"
+    },
+    "address": [
+      {
+        "street": "blah blah St",
+        "type": "home",
+        "number": "1234",
+        "unit": "1 a",
+        "city": "Somewhere",
+        "state": "WV",
+        "zipcode": "12345"
+      },
+      {
+        "street": "blah blah St",
+        "type": "home",
+        "number": "1234",
+        "unit": "1 a",
+        "city": "Somewhere",
+        "state": "WV",
+        "zipcode": "12345"
+      }
+    ],
+    "communication": [
+      {
+        "value": "304-555-8282",
+        "type": "cell",
+        "preferred": "cell"
+      },
+      {
+        "value": "304-555-8282",
+        "type": "cell",
+        "preferred": "cell"
+      }
+    ]
+  },
+  {
+    "identification": {
+      "firstName": "Bob",
+      "lastName": "Frederick",
+      "dob": "06/21/1981",
+      "gender": "M",
+      "title": "student"
+    },
+    "address": [
+      {
+        "street": "blah blah St",
+        "type": "home",
+        "number": "1234",
+        "unit": "1 a",
+        "city": "Somewhere",
+        "state": "WV",
+        "zipcode": "12345"
+      },
+      {
+        "street": "blah blah St",
+        "type": "home",
+        "number": "1234",
+        "unit": "1 a",
+        "city": "Somewhere",
+        "state": "WV",
+        "zipcode": "12345"
+      }
+    ],
+    "communication": [
+      {
+        "value": "304-555-8282",
+        "type": "cell",
+        "preferred": "cell"
+      },
+      {
+        "value": "304-555-8282",
+        "type": "cell",
+        "preferred": "cell"
+      }
+    ]
+  }
+]

@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+   
+    <flow name="ms3-contact-api-main">
+        <http:listener config-ref="ms3-contact-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="ms3-contact-api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="ms3-contact-api-console">
+        <http:listener config-ref="ms3-contact-api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="ms3-contact-api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="delete:\employee\(empId):ms3-contact-api-config">
+        <ee:transform doc:id="f71b6cc1-c370-4f0f-9fef-d20bdb64c2bd" doc:name="extract Http Attribute">
+            <ee:variables>
+                <ee:set-variable variableName="empId"><![CDATA[attributes.uriParams.'empId']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <http:request method="DELETE" doc:name="Delete Employee" doc:id="abab6c88-f221-4df2-a39c-31dc10408ac8" config-ref="HTTP_Request_configuration" path="/employees/{id}">
+            <http:uri-params><![CDATA[#[output application/java
+---
+{
+	"id" : vars.empId
+}]]]></http:uri-params>
+        </http:request>
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="515739ff-d761-4f58-8279-2c328c006a5b">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  success: {
+    msg: "Status is ok "
+  }
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="patch:\employee\(empId):ms3-contact-api-config">
+        <ee:transform doc:id="6c7ea8d4-7392-4c11-af53-636757705784" doc:name="extract HTTP Attribute">
+            <ee:variables>
+                <ee:set-variable variableName="empId"><![CDATA[attributes.uriParams.'empId']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="extract Payload" doc:id="dc5bfd64-dbe1-4fb8-898a-4bdeabb30329">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	employee: {
+		identification: payload.employee.identification,
+		address: payload.employee.address map ( address , indexOfAddress ) -> {
+			"type": address."type",
+			number: address.number ,
+			street: address.street,
+			unit: address.unit,
+			city: address.city,
+			state: address.state,
+			zipcode: address.zipcode
+		},
+		communication: payload.employee.communication map ( communication , indexOfCommunication ) -> {
+			"type": communication."type",
+			value: communication.value,
+			preferred: communication.preferred  default false
+		}
+	}
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <http:request method="PATCH" doc:name="Update Employee" doc:id="a84ae1ec-95ef-4270-a1bb-cbb8aed6a279" config-ref="HTTP_Request_configuration" path="/employees/{id}">
+            <http:uri-params><![CDATA[#[output application/java
+---
+{
+	"id" : vars.empId
+}]]]></http:uri-params>
+        </http:request>
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="d1cc0d49-73fd-4e0c-8051-6442ff252dcd" doc:name="Successful Update">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  success: {
+    msg: "Update Status is ok "
+  }
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="54eca894-3e88-4e53-9403-e7ad6800676c" type="ANY">
+				<set-variable value="404" doc:name="Set Variable" doc:id="9d07feda-5d94-4c83-8369-5d1df152414a" variableName="httpStatus"/>
+				<ee:transform doc:name="Transform Message" doc:id="820674f9-841d-42f4-acb2-1275e647b191" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	msg: "HTTP Error is occurred "
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+    </flow>
+    <flow name="get:\employee\(empId):ms3-contact-api-config">
+        <ee:transform doc:id="3c62f22d-bf07-4ba7-a622-ce798f90e810" doc:name="Extract HTTP Attribute">
+            <ee:variables>
+                <ee:set-variable variableName="empId"><![CDATA[attributes.uriParams.'empId']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <http:request method="GET" doc:name="getempByEmployeeId" doc:id="7a9a9f81-e37b-4502-80a5-6c1ce3d4ac1b" path="/employees/{id}" config-ref="HTTP_Request_configuration">
+            <http:uri-params><![CDATA[#[output application/java
+---
+{
+	"id" : vars.empId
+}]]]></http:uri-params>
+        </http:request>
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="799cdb3f-2158-4917-9fb1-d2f6544cb74b" doc:name="Employee Response">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="dc73a3fe-e924-4621-b355-e199672855d0" type="ANY">
+				<set-variable value="404" doc:name="Set Variable" doc:id="1339945e-4243-49ab-b0b1-576ef2c6ecc1" variableName="httpStatus"/>
+				<ee:transform doc:name="Transform Message" doc:id="c1af6d69-202d-4def-b4e4-1c9379e581ec" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	msg: "HTTP Error is occurred "
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate></error-handler>
+    </flow>
+    <flow name="post:\employee:application\json:ms3-contact-api-config">
+        <ee:transform doc:name="Recieve Payload for EMP" doc:id="27323965-1d5b-4298-bf48-d4300ad85413">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	employee: {
+		identification: payload.employee.identification,
+		address: payload.employee.address map ( address , indexOfAddress ) -> {
+			"type": address."type",
+			number: address.number ,
+			street: address.street,
+			unit: address.unit,
+			city: address.city,
+			state: address.state,
+			zipcode: address.zipcode
+		},
+		communication: payload.employee.communication map ( communication , indexOfCommunication ) -> {
+			"type": communication."type",
+			value: communication.value,
+			preferred: communication.preferred default false
+		}
+	}
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <http:request method="POST" doc:name="create Employee" doc:id="d537b950-83b9-46ee-acdb-b59dbff536b0" config-ref="HTTP_Request_configuration" path="/employees" />
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="f869e8aa-2118-4026-833f-8457e13e39a8">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  success: {
+    "empid": payload.id
+  }
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="get:\employee:ms3-contact-api-config">
+        <logger level="INFO" message="Request to Recieve All employee" />
+        <http:request method="GET" doc:name="getAllEmployee" doc:id="187b07f5-34fa-4390-9661-277ca4d8190e" config-ref="HTTP_Request_configuration" path="/employees" />
+        <ee:transform doc:name="Transform Message" doc:id="6b6fa1ec-a614-4459-a767-8ef1f02c73d4">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <logger level="INFO" doc:name="Logger" doc:id="433b0231-773b-4b6a-bbb2-d3dae91fbf93" message="payload" />
+    </flow>
+</mule>

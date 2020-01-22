@@ -1,0 +1,11 @@
+
+sys-contact:
+  http:
+    port: "8081"
+    basepath: "/api"
+    host: "localhost"
+   
+   
+prc-contact:
+   http:
+     port: "8082"
